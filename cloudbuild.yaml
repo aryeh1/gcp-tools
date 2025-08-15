@@ -18,9 +18,7 @@ steps:
   - '--trigger-http'
   - '--allow-unauthenticated'
   - '--set-secrets=API_KEY=${_API_KEY},SEARCH_ENGINE_ID=${_SEARCH_ENGINE_ID}'
-  # הוספת השורה הזו היא זו שגרמה לבעיית הלוגים.
-  # ודא שהיא מכילה את חשבון השירות הנכון של Cloud Build.
-  serviceAccount: 'projects/idea-garden-266a2/serviceAccounts/902854788719-compute@developer.gserviceaccount.com'
+
 
 substitutions:
   _API_KEY: 'projects/idea-garden-266a2/secrets/API_KEY/versions/latest'
