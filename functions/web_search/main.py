@@ -55,7 +55,7 @@ def web_search(request):
 
         final_response = {
             # שנה את הגרסה כדי שנדע שהפריסה עבדה
-            "version": "v1.999912 - final encoding fix",
+            "version": "v2.01",
             "results": search_results
         }
         
