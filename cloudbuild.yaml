@@ -17,8 +17,8 @@ steps:
 
 # הגדרת משתני סביבה מאובטחים
 substitutions:
-  API_KEY: 'projects/idea-garden-266a2/secrets/API_KEY/versions/latest'
-  SEARCH_ENGINE_ID: 'projects/idea-garden-266a2/secrets/SEARCH_ENGINE_ID/versions/latest'
+  _API_KEY: 'projects/idea-garden-266a2/secrets/API_KEY/versions/latest'
+  _SEARCH_ENGINE_ID: 'projects/idea-garden-266a2/secrets/SEARCH_ENGINE_ID/versions/latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
