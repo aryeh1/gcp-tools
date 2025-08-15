@@ -1,6 +1,7 @@
 import os
+import json # <-- ייבוא חדש
 from googleapiclient.discovery import build
-from flask import jsonify # <-- הוספת ייבוא הכרחי
+from flask import Response # <-- שינוי בייבוא
 
 def web_search(request):
     """
@@ -11,11 +12,13 @@ def web_search(request):
     search_engine_id = os.environ.get("SEARCH_ENGINE_ID")
 
     if not api_key or not search_engine_id:
-        return jsonify({"error": "API_KEY or SEARCH_ENGINE_ID environment variables not set."}), 500
+        error_response = json.dumps({"error": "API_KEY or SEARCH_ENGINE_ID not set."}, ensure_ascii=False)
+        return Response(error_response, status=500, mimetype='application/json; charset=utf-8')
 
     request_json = request.get_json(silent=True)
     if not request_json or 'query' not in request_json:
-        return jsonify({"error": "Missing 'query' in request body."}), 400
+        error_response = json.dumps({"error": "Missing 'query' in request body."}, ensure_ascii=False)
+        return Response(error_response, status=400, mimetype='application/json; charset=utf-8')
 
     query = request_json['query']
 
@@ -24,7 +27,7 @@ def web_search(request):
         res = service.cse().list(
             q=query,
             cx=search_engine_id,
-            num=5  # Fetch 5 results
+            num=5
         ).execute()
 
         items = res.get('items', [])
@@ -51,15 +54,18 @@ def web_search(request):
             })
 
         final_response = {
-            # עדכנתי גרסה כדי שנוכל לוודא שהפריסה החדשה עלתה
-            "version": "v1.0908 - json fix",
+            # שנה את הגרסה כדי שנדע שהפריסה עבדה
+            "version": "v1.999912 - final encoding fix",
             "results": search_results
         }
         
-        # <-- שימוש ב-jsonify להחזרת תגובת JSON תקנית
-        return jsonify(final_response), 200
+        # --- השינוי המרכזי ---
+        # 1. נמיר ל-JSON עם ensure_ascii=False כדי לשמור על עברית.
+        # 2. ניצור אובייקט Response עם הכותרות הנכונות.
+        json_payload = json.dumps(final_response, ensure_ascii=False)
+        return Response(json_payload, status=200, mimetype='application/json; charset=utf-8')
 
     except Exception as e:
         print(f"An error occurred: {e}")
-        # <-- שימוש ב-jsonify גם עבור הודעות שגיאה
-        return jsonify({"error": "An internal error occurred during the search operation."}), 500
+        error_response = json.dumps({"error": "An internal error occurred."}, ensure_ascii=False)
+        return Response(error_response, status=500, mimetype='application/json; charset=utf-8')
