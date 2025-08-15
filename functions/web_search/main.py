@@ -54,7 +54,7 @@ def web_search(request):
         # במקום להחזיר רק את התוצאות, ניצור אובייקט חדש
         # שיכיל גם מספר גרסה כדי שנוכל לוודא שהפריסה הצליחה.
         final_response = {
-            "version": "v1.66 - deployment test",
+            "version": "v1.67 - deployment test",
             "results": search_results
         }
         # --- END: השינוי לבדיקה ---
