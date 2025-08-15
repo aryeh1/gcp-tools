@@ -1,6 +1,6 @@
-
 import os
 from googleapiclient.discovery import build
+from flask import jsonify # <-- הוספת ייבוא הכרחי
 
 def web_search(request):
     """
@@ -11,11 +11,11 @@ def web_search(request):
     search_engine_id = os.environ.get("SEARCH_ENGINE_ID")
 
     if not api_key or not search_engine_id:
-        return {"error": "API_KEY or SEARCH_ENGINE_ID environment variables not set."}, 500
+        return jsonify({"error": "API_KEY or SEARCH_ENGINE_ID environment variables not set."}), 500
 
     request_json = request.get_json(silent=True)
     if not request_json or 'query' not in request_json:
-        return {"error": "Missing 'query' in request body."}, 400
+        return jsonify({"error": "Missing 'query' in request body."}), 400
 
     query = request_json['query']
 
@@ -33,7 +33,7 @@ def web_search(request):
             pagemap = item.get('pagemap', {})
             metatags_list = pagemap.get('metatags', [])
             publication_date = None
-            
+
             if metatags_list:
                 metatags = metatags_list[0]
                 publication_date = (
@@ -50,18 +50,16 @@ def web_search(request):
                 "publication_date": publication_date
             })
 
-        # --- START: השינוי לבדיקה ---
-        # במקום להחזיר רק את התוצאות, ניצור אובייקט חדש
-        # שיכיל גם מספר גרסה כדי שנוכל לוודא שהפריסה הצליחה.
         final_response = {
-            "version": "v1.6547 - deployment test",
+            # עדכנתי גרסה כדי שנוכל לוודא שהפריסה החדשה עלתה
+            "version": "v1.7000 - json fix",
             "results": search_results
         }
-        # --- END: השינוי לבדיקה ---
-
-        return final_response, 200
+        
+        # <-- שימוש ב-jsonify להחזרת תגובת JSON תקנית
+        return jsonify(final_response), 200
 
     except Exception as e:
         print(f"An error occurred: {e}")
-        return {"error": "An internal error occurred during the search operation."}, 500
-
+        # <-- שימוש ב-jsonify גם עבור הודעות שגיאה
+        return jsonify({"error": "An internal error occurred during the search operation."}), 500
