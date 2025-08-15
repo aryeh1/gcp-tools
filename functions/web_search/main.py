@@ -1,7 +1,7 @@
 import os
-import json # <-- ייבוא חדש
+import json
 from googleapiclient.discovery import build
-from flask import Response # <-- שינוי בייבוא
+from flask import Response
 
 def web_search(request):
     """
@@ -54,16 +54,12 @@ def web_search(request):
             })
 
         final_response = {
-            # שנה את הגרסה כדי שנדע שהפריסה עבדה
-            "version": "v2.01",
+            "version": "v2.02",
             "result": {
                 "search_results": search_results
             }
         }
-        
-        # --- השינוי המרכזי ---
-        # 1. נמיר ל-JSON עם ensure_ascii=False כדי לשמור על עברית.
-        # 2. ניצור אובייקט Response עם הכותרות הנכונות.
+
         json_payload = json.dumps(final_response, ensure_ascii=False)
         return Response(json_payload, status=200, mimetype='application/json; charset=utf-8')
 
