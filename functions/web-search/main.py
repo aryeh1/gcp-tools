@@ -1,3 +1,4 @@
+
 import os
 from googleapiclient.discovery import build
 
@@ -29,34 +30,38 @@ def web_search(request):
         items = res.get('items', [])
         search_results = []
         for item in items:
-            # --- START: New logic for date extraction ---
-            publication_date = None
-            # The API returns metadata in a 'pagemap' object.
-            # We safely access it using .get() to avoid errors if keys are missing.
             pagemap = item.get('pagemap', {})
             metatags_list = pagemap.get('metatags', [])
+            publication_date = None
             
             if metatags_list:
                 metatags = metatags_list[0]
-                # Search for common date-related metatags in a prioritized order.
                 publication_date = (
                     metatags.get('article:published_time') or
                     metatags.get('og:updated_time') or
                     metatags.get('publishdate') or
-                    metatags.get('date') # A common alternative
+                    metatags.get('date')
                 )
-            # --- END: New logic for date extraction ---
 
             search_results.append({
                 "title": item.get("title"),
                 "link": item.get("link"),
                 "snippet": item.get("snippet"),
-                "publication_date": publication_date  # The new, crucial field. Can be None.
+                "publication_date": publication_date
             })
 
-        return {"results": search_results}, 200
+        # --- START: השינוי לבדיקה ---
+        # במקום להחזיר רק את התוצאות, ניצור אובייקט חדש
+        # שיכיל גם מספר גרסה כדי שנוכל לוודא שהפריסה הצליחה.
+        final_response = {
+            "version": "v1.2 - deployment test",
+            "results": search_results
+        }
+        # --- END: השינוי לבדיקה ---
+
+        return final_response, 200
 
     except Exception as e:
-        # Return a generic error message for security. Log the actual error for debugging.
         print(f"An error occurred: {e}")
         return {"error": "An internal error occurred during the search operation."}, 500
+
