@@ -1,24 +1,28 @@
-# cloudbuild.yaml (גרסת Monorepo)
-steps:
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'gcloud'
-  args:
-    - 'functions'
-    - 'deploy'
-    - '${_FUNCTION_NAME}'  # <-- משתנה: שם הפונקציה
-    - '--source=./functions/${_FUNCTION_NAME}' # <-- משתנה: נתיב לקוד
-    - '--gen2'
-    - '--region=${_REGION}'  # <-- משתנה: אזור
-    - '--runtime=python312'
-    - '--entry-point=${_ENTRY_POINT}' # <-- משתנה: שם הפונקציה בקוד
-    - '--trigger-http'
-    - '--allow-unauthenticated'
-    - '--set-env-vars=API_KEY=${_API_KEY},SEARCH_ENGINE_ID=${_SEARCH_ENGINE_ID}'
 
-# הגדרת משתני סביבה מאובטחים
+steps:
+# --- START: צעד דיבאג חדש ---
+# הצעד הזה מדפיס את כל הקבצים והתיקיות בפרויקט
+# כדי שנוכל לראות את המבנה המדויק.
+- name: 'ubuntu'
+  args: ['ls', '-R']
+  id: 'List Files'
+# --- END: צעד דיבאג חדש ---
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - 'gcloud'
+  - 'functions'
+  - 'deploy'
+  - '${_FUNCTION_NAME}'
+  - '--source=./functions/${_FUNCTION_NAME}'
+  - '--entry-point=${_ENTRY_POINT}'
+  - '--runtime=python311'
+  - '--region=${_REGION}'
+  - '--trigger-http'
+  - '--allow-unauthenticated'
+  - '--set-secrets=API_KEY=${_API_KEY},SEARCH_ENGINE_ID=${_SEARCH_ENGINE_ID}'
+
 substitutions:
   _API_KEY: 'projects/idea-garden-266a2/secrets/API_KEY/versions/latest'
   _SEARCH_ENGINE_ID: 'projects/idea-garden-266a2/secrets/SEARCH_ENGINE_ID/versions/latest'
 
-options:
-  logging: CLOUD_LOGGING_ONLY
