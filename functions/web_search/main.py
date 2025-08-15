@@ -52,7 +52,7 @@ def web_search(request):
 
         final_response = {
             # עדכנתי גרסה כדי שנוכל לוודא שהפריסה החדשה עלתה
-            "version": "v1.7000 - json fix",
+            "version": "v1.0908 - json fix",
             "results": search_results
         }
         
