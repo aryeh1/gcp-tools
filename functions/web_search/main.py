@@ -53,10 +53,20 @@ def web_search(request):
                 "publication_date": publication_date
             })
 
-        final_response = {
+        # Build the inner response structure
+        inner_response = {
             "version": "v2.02",
             "result": {
                 "search_results": search_results
+            }
+        }
+        
+        # Wrap in the expected s6783298_web_search_response structure
+        final_response = {
+            "s6783298_web_search_response": {
+                "result": {
+                    "search_results": inner_response
+                }
             }
         }
 
