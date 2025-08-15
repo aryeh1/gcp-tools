@@ -14,3 +14,11 @@ steps:
     - '--trigger-http'
     - '--allow-unauthenticated'
     - '--set-env-vars=API_KEY=${_API_KEY},SEARCH_ENGINE_ID=${_SEARCH_ENGINE_ID}'
+
+# הגדרת משתני סביבה מאובטחים
+substitutions:
+  _API_KEY: 'projects/YOUR_PROJECT_ID/secrets/API_KEY/versions/latest'
+  _SEARCH_ENGINE_ID: 'projects/YOUR_PROJECT_ID/secrets/SEARCH_ENGINE_ID/versions/latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
